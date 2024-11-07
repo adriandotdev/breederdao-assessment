@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 90
+    },
+    "auditLog": "D:\\Personal Projects\\breederdao-assessment\\logs\\admin-monolithic\\.4db3cfc9d40aef5e309bd75f36ab16e33fcdddca-audit.json",
+    "files": [
+        {
+            "date": 1730978809403,
+            "name": "D:\\Personal Projects\\breederdao-assessment\\logs\\admin-monolithic\\admin-monolithic-2024-11-07.log",
+            "hash": "07046be0bf15e43ab2f4fcd7875f4ef143ab683a9a49785da665c70ba02f90ac"
+        }
+    ],
+    "hashType": "sha256"
+}
