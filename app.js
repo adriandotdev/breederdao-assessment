@@ -44,6 +44,7 @@ app.use(morgan("combined", { stream: logger.stream }));
 app.use(cookieParser());
 
 require("./apis/accounts.api")(app);
+require("./apis/axies.api")(app);
 
 app.use("*", (req, res, next) => {
 	logger.error({
