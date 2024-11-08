@@ -43,6 +43,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("combined", { stream: logger.stream }));
 app.use(cookieParser());
 
+require("./apis/accounts.api")(app);
+
 app.use("*", (req, res, next) => {
 	logger.error({
 		API_NOT_FOUND: {

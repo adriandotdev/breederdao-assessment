@@ -23,7 +23,7 @@ const colors = {
 
 addColors(colors);
 
-const LOGS_FOLDER_NAME = `admin-monolithic`;
+const LOGS_FOLDER_NAME = `logs`;
 
 const options = {
 	info: {

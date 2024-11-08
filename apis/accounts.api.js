@@ -1,9 +1,13 @@
+const AccountRepository = require("../repositories/AccountRepository");
+const AccountService = require("../services/AccountService");
 const logger = require("../utils/logger");
 
 /**
  * @param {import('express').Express} app
  */
 module.exports = (app) => {
+	const service = new AccountService(new AccountRepository());
+
 	app.post(
 		"/api/v1/accounts/register",
 		[],
@@ -12,7 +16,7 @@ module.exports = (app) => {
 		 * @param {import('express').Response} res
 		 * @param {import('express').NextFunction} next
 		 */
-		(req, res, next) => {
+		async (req, res, next) => {
 			try {
 				logger.info({
 					REGISTER_ACCOUNT_REQUEST: {
@@ -22,6 +26,10 @@ module.exports = (app) => {
 					},
 				});
 
+				const { username, password } = req.body;
+
+				const newAccount = await service.Register({ username, password });
+
 				logger.info({
 					REGISTER_ACCOUNT_RESPONSE: {
 						message: "SUCCESS",
@@ -30,7 +38,7 @@ module.exports = (app) => {
 
 				return res
 					.status(201)
-					.json({ statusCode: 201, data: {}, status: "Created" });
+					.json({ statusCode: 201, data: newAccount, status: "Created" });
 			} catch (err) {
 				req.error_name = "REGISTER_ACCOUNT_ERROR";
 				next(err);
@@ -38,6 +46,35 @@ module.exports = (app) => {
 		}
 	);
 
+	app.post(
+		"/api/v1/accounts/login",
+		[],
+		/**
+		 * @param {import('express').Request} req
+		 * @param {import('express').Response} res
+		 * @param {import('express').NextFunction} next
+		 */
+		async (req, res, next) => {
+			try {
+				logger.info({
+					LOGIN_REQUEST: {
+						data: { ...req.body },
+					},
+				});
+
+				const { username, password } = req.body;
+
+				const result = await service.Login({ username, password });
+
+				return res
+					.status(200)
+					.json({ statusCode: 200, data: result, status: "OK" });
+			} catch (err) {
+				req.error_name = "LOGIN_ERROR";
+				next(err);
+			}
+		}
+	);
 	app.use((err, req, res, next) => {
 		logger.error({
 			API_REQUEST_ERROR: {
