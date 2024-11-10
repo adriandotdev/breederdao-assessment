@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 
-const {} = require("../utils/HttpError");
+const {
+	HttpUnauthorized,
+	HttpInternalServerError,
+} = require("../utils/HttpError");
+
 class AuthenticationMiddleware {
 	AccessTokenVerifier() {
 		/**
@@ -30,6 +34,7 @@ class AuthenticationMiddleware {
 								throw new HttpInternalServerError("Internal Server Error", []);
 							}
 						}
+						next();
 					}
 				);
 			} catch (err) {

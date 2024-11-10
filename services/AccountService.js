@@ -1,5 +1,5 @@
 const AccountRepository = require("../repositories/AccountRepository");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { HttpBadRequest, HttpUnauthorized } = require("../utils/HttpError");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");

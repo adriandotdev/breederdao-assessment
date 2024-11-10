@@ -1,10 +1,28 @@
 const axios = require("axios");
 const { Web3 } = require("web3");
+const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+const logger = require("../utils/logger");
+const mongoose = require("mongoose");
+
+function GetModel(className) {
+	if (!schemas[className]) {
+		const schema = new mongoose.Schema(
+			{ id: String, name: String, stage: Number, class: String },
+			{ collection: className }
+		);
+		schemas[className] = mongoose.model(className, schema);
+	}
+	return schemas[className];
+}
 
 module.exports = (app) => {
+	const authMiddleware = new AuthenticationMiddleware();
+
+	schemas = [];
+
 	app.get(
 		"/api/v1/axies",
-		[],
+		[authMiddleware.AccessTokenVerifier()],
 
 		/**
 		 * @param {import('express').Request} req
@@ -31,9 +49,33 @@ module.exports = (app) => {
 					{ headers: { "Content-Type": "application/json" } }
 				);
 
+				const axies = result.data.data.axies.results;
+
+				const classes = axies.reduce((acc, item) => {
+					const { id, name, stage, class: className } = item;
+					if (!acc[className.toLowerCase() + "_class"]) {
+						acc[className.toLowerCase() + "_class"] = [];
+					}
+					acc[className.toLowerCase() + "_class"].push({
+						id,
+						name,
+						stage,
+						class: className,
+					});
+					return acc;
+				}, {});
+
+				for (const [className, documents] of Object.entries(classes)) {
+					const Model = GetModel(className);
+					const result = await Model.insertMany(documents);
+					console.log(
+						`${result.length} documents inserted into ${className} collection`
+					);
+				}
+
 				return res.status(200).json({
 					statusCode: 200,
-					data: result.data.data.axies.results,
+					data: [],
 					status: "OK",
 				});
 			} catch (err) {
@@ -672,5 +714,30 @@ module.exports = (app) => {
 
 		console.log(axieContract._methods);
 		return res.status(200).json({ details: {} });
+	});
+
+	app.use((err, req, res, next) => {
+		logger.error({
+			API_REQUEST_ERROR: {
+				error_name: req.error_name || "UNKNOWN_ERROR",
+				message: err.message,
+				stack: err.stack.replace(/\\/g, "/"), // Include stack trace for debugging
+				request: {
+					method: req.method,
+					url: req.url,
+					code: err.status || 500,
+				},
+				data: err.data || [],
+			},
+		});
+
+		const status = err.status || 500;
+		const message = err.message || "Internal Server Error";
+
+		res.status(status).json({
+			status,
+			data: err.data || [],
+			message,
+		});
 	});
 };
