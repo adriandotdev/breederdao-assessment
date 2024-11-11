@@ -35,6 +35,12 @@ module.exports = (app) => {
 		 */
 		async (req, res, next) => {
 			try {
+				logger.info({
+					RETRIEVE_AND_STORE_AXIES: {
+						message: "SUCCESS",
+					},
+				});
+
 				const result = await axios.post(
 					"https://graphql-gateway.axieinfinity.com/graphql",
 					{
@@ -73,9 +79,12 @@ module.exports = (app) => {
 
 				for (const [className, documents] of Object.entries(classes)) {
 					const Model = GetModel(className);
+
 					await Model.deleteMany({});
+
 					const result = await Model.insertMany(documents);
-					console.log(
+
+					logger.info(
 						`${result.length} documents inserted into ${className} collection`
 					);
 				}
@@ -93,7 +102,7 @@ module.exports = (app) => {
 	);
 
 	app.get(
-		"/api/v1/axies/test",
+		"/api/v1/axies/contract",
 		[authMiddleware.AccessTokenVerifier()],
 		/**
 		 * @param {import('express').Request} req
@@ -102,6 +111,12 @@ module.exports = (app) => {
 		 * @returns
 		 */
 		async (req, res, next) => {
+			logger.info({
+				CALL_CONTRACT_METHOD_REQUEST: {
+					message: "SUCCESS",
+				},
+			});
+
 			const INFURA_ID = process.env.INFURA_ID;
 			const AXIE_CONTRACT_ADDRESS = process.env.AXIE_CONTRACT_ADDRESS;
 
@@ -711,6 +726,12 @@ module.exports = (app) => {
 
 			const result = await axieContract._methods.geneManager().call();
 
+			logger.info({
+				CALL_CONTRACT_METHOD_RESPONSE: {
+					message: "SUCCESS",
+				},
+			});
+
 			return res
 				.status(200)
 				.json({ statusCode: 200, data: result, message: "OK" });
@@ -739,6 +760,12 @@ module.exports = (app) => {
 				const { class_name } = req.query;
 
 				const result = await service.GetAxies(class_name);
+
+				logger.info({
+					GET_AXIES_RESPONSE: {
+						message: "SUCCESS",
+					},
+				});
 
 				return res
 					.status(200)
