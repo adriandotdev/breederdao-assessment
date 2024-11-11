@@ -17,6 +17,13 @@ httpServer.listen(process.env.PORT, () => {
 		.connect(
 			`mongodb+srv://${dbUsername}:${dbPassword}@myatlasclusteredu.1mtwqh7.mongodb.net/${dbDatabaseName}?retryWrites=true&w=majority&appName=myAtlasClusterEDU`
 		)
-		.then(() => console.log("Connected to MongoDB!"))
-		.catch((err) => console.error("Connection error:", err));
+		.then(() => logger.info(`Connected to MongoDB - ${dbDatabaseName}`))
+		.catch((err) =>
+			logger.info({
+				DB_CONNECTION_ERROR: {
+					message: err.message,
+					stack: err.stack.replace(/\\/g, "/"), // Include stack trace for debugging
+				},
+			})
+		);
 });

@@ -1,8 +1,14 @@
 const { validationResult, body } = require("express-validator");
-const AccountRepository = require("../repositories/AccountRepository");
+
+// Services
 const AccountService = require("../services/AccountService");
-const logger = require("../utils/logger");
+
+// Repositories
+const AccountRepository = require("../repositories/AccountRepository");
+
+// Utils
 const { HttpBadRequest } = require("../utils/HttpError");
+const logger = require("../utils/logger");
 
 /**
  * @param {import('express').Express} app
@@ -98,6 +104,12 @@ module.exports = (app) => {
 
 				const result = await service.Login({ username, password });
 
+				logger.info({
+					LOGIN_RESPONSE: {
+						message: "SUCCESS",
+					},
+				});
+
 				return res
 					.status(200)
 					.json({ statusCode: 200, data: result, status: "OK" });
@@ -107,6 +119,7 @@ module.exports = (app) => {
 			}
 		}
 	);
+
 	app.use((err, req, res, next) => {
 		logger.error({
 			API_REQUEST_ERROR: {

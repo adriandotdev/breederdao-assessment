@@ -1,9 +1,17 @@
+const mongoose = require("mongoose");
 const axios = require("axios");
 const { Web3 } = require("web3");
-const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+
+// Utils
 const logger = require("../utils/logger");
-const mongoose = require("mongoose");
+
+// Middleware
+const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+
+// Services
 const AxiesService = require("../services/AxiesService");
+
+// Repositories
 const AxiesRepository = require("../repositories/AxiesRepository");
 
 schemas = [];
