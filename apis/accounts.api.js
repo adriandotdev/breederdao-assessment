@@ -1,6 +1,8 @@
+const { validationResult, body } = require("express-validator");
 const AccountRepository = require("../repositories/AccountRepository");
 const AccountService = require("../services/AccountService");
 const logger = require("../utils/logger");
+const { HttpBadRequest } = require("../utils/HttpError");
 
 /**
  * @param {import('express').Express} app
@@ -8,9 +10,28 @@ const logger = require("../utils/logger");
 module.exports = (app) => {
 	const service = new AccountService(new AccountRepository());
 
+	function validate(req, res) {
+		const ERRORS = validationResult(req);
+
+		if (!ERRORS.isEmpty())
+			throw new HttpBadRequest("BAD_REQUEST", ERRORS.mapped());
+	}
+
 	app.post(
 		"/api/v1/accounts/register",
-		[],
+		[
+			body("username")
+				.notEmpty()
+				.withMessage("Property: username must be provided")
+				.isLength({ min: 8 })
+				.withMessage("Property: username must be at least 8 characters"),
+
+			body("password")
+				.notEmpty()
+				.withMessage("Property: password must be provided")
+				.isLength({ min: 8 })
+				.withMessage("Property: password must be at least 8 characters"),
+		],
 		/**
 		 * @param {import('express').Request} req
 		 * @param {import('express').Response} res
@@ -25,6 +46,8 @@ module.exports = (app) => {
 						},
 					},
 				});
+
+				validate(req, res);
 
 				const { username, password } = req.body;
 
@@ -48,7 +71,14 @@ module.exports = (app) => {
 
 	app.post(
 		"/api/v1/accounts/login",
-		[],
+		[
+			body("username")
+				.notEmpty()
+				.withMessage("Property: username must be provided"),
+			body("password")
+				.notEmpty()
+				.withMessage("Property: password must be provided"),
+		],
 		/**
 		 * @param {import('express').Request} req
 		 * @param {import('express').Response} res
@@ -61,6 +91,8 @@ module.exports = (app) => {
 						data: { ...req.body },
 					},
 				});
+
+				validate(req, res);
 
 				const { username, password } = req.body;
 
