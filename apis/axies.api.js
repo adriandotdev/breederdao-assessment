@@ -43,7 +43,7 @@ module.exports = (app) => {
 							from: 0,
 							size: 300,
 							sort: "PriceAsc",
-							auctionType: "All",
+							auctionType: "Sale",
 							criteria: {},
 						},
 						query:
@@ -56,20 +56,24 @@ module.exports = (app) => {
 
 				const classes = axies.reduce((acc, item) => {
 					const { id, name, stage, class: className } = item;
+
 					if (!acc[className.toLowerCase() + "_class"]) {
 						acc[className.toLowerCase() + "_class"] = [];
 					}
+
 					acc[className.toLowerCase() + "_class"].push({
 						id,
 						name,
 						stage,
 						class: className,
 					});
+
 					return acc;
 				}, {});
 
 				for (const [className, documents] of Object.entries(classes)) {
 					const Model = GetModel(className);
+					await Model.deleteMany({});
 					const result = await Model.insertMany(documents);
 					console.log(
 						`${result.length} documents inserted into ${className} collection`

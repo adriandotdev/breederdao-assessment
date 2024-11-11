@@ -13,6 +13,39 @@ function GetModel(className) {
 }
 
 class AxiesRepository {
+	GetAllAxies() {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const collections = await mongoose.connection.db
+					.listCollections()
+					.toArray();
+
+				let classes = {};
+
+				await Promise.all(
+					collections.map(async (collection) => {
+						if (
+							!classes[collection.name] &&
+							collection.name.includes("_class")
+						) {
+							classes[collection.name] = collection.name;
+						}
+
+						if (collection.name.includes("_class"))
+							classes[collection.name] = await mongoose.connection.db
+								.collection(collection.name)
+								.find()
+								.toArray();
+					})
+				);
+
+				resolve(classes);
+			} catch (err) {
+				reject(err);
+			}
+		});
+	}
+
 	GetAxies(className) {
 		return new Promise(async (resolve, reject) => {
 			try {

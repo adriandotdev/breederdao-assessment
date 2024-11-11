@@ -11,7 +11,13 @@ class AxiesService {
 	}
 
 	async GetAxies(className) {
-		const result = this.#repository.GetAxies(className);
+		let result = null;
+
+		if (className.toLowerCase() === "all") {
+			result = await this.#repository.GetAllAxies();
+		} else {
+			result = this.#repository.GetAxies(className.toLowerCase() + "_class");
+		}
 
 		return result;
 	}
