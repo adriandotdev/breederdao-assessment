@@ -51,7 +51,6 @@ app.use(
 			graphiql: true,
 			context: {
 				auth: req.headers.authorization,
-				// connection: req.context.connection,
 			},
 			customFormatErrorFn: (error) => {
 				if (req.context && req.context.connection) {
