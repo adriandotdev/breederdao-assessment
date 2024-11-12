@@ -7,6 +7,8 @@ const {
 } = require("graphql");
 
 const AxiesRepository = require("../repositories/AxiesRepository");
+const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+const { HttpUnauthorized } = require("../utils/HttpError");
 
 const DEFAULT = new GraphQLObjectType({
 	name: "DEFAULT",
@@ -88,13 +90,20 @@ const AXIES = new GraphQLObjectType({
 });
 
 const repository = new AxiesRepository();
+const authMiddleware = new AuthenticationMiddleware();
 
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
 	fields: {
 		axies: {
 			type: AXIES,
-			resolve: async () => {
+			resolve: async (_, args, context) => {
+				const isValid = await authMiddleware.GraphQLAccessTokenVerifier(
+					context.auth
+				);
+
+				if (!isValid) throw new HttpUnauthorized("UNAUTHORIZED", null);
+
 				return {};
 			},
 		},

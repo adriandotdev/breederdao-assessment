@@ -43,6 +43,43 @@ class AuthenticationMiddleware {
 			}
 		};
 	}
+
+	async GraphQLAccessTokenVerifier(auth) {
+		try {
+			let isValid = false;
+
+			if (!auth) throw new HttpUnauthorized("UNAUTHORIZED", []);
+
+			const accessToken = auth.split(" ")[1];
+
+			if (!accessToken) throw new HttpUnauthorized("UNAUTHORIZED", []);
+
+			jwt.verify(
+				accessToken,
+				process.env.ACCESS_TOKEN_SECRET_KEY,
+				(err, decode) => {
+					if (err) {
+						if (err instanceof jwt.TokenExpiredError) {
+							throw new HttpUnauthorized("TOKEN_EXPIRED", []);
+						} else if (err instanceof jwt.JsonWebTokenError) {
+							throw new HttpUnauthorized("INVALID_TOKEN", []);
+						} else {
+							throw new HttpInternalServerError("Internal Server Error", []);
+						}
+					}
+					isValid = true;
+				}
+			);
+
+			return isValid;
+		} catch (err) {
+			if (err !== null) {
+				throw new HttpUnauthorized(err.message, []);
+			}
+
+			throw new HttpInternalServerError("INTERNAL_SERVER_ERROR", []);
+		}
+	}
 }
 
 module.exports = AuthenticationMiddleware;

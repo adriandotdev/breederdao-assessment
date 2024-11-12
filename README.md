@@ -6,70 +6,55 @@ Ensure the following are installed and set up on your machine:
 - Node installed on your machine.
 - MongoDB
 
-## How to Test this Server Locally
-
-1. Clone this repository
-
-```
-git clone https://github.com/adriandotdev/breederdao-assessment.git
-```
-
-1. Navigate to the project folder
-
-```
-cd /breederdao-assessment
-```
-
-3. Install dependencies
-
-```
-npm install
-```
-
-4. Run the application
-
-```
-npm run dev
-```
-
-## Environment Variables
-
-These are the environment variables needed to run the application.
-
-```env
-PORT=<PORT>
-DB_USERNAME=<USERNAME>
-DB_PASSWORD=<PASSWORD>
-DB_DATABASE_NAME=<DB_NAME>
-ACCESS_TOKEN_SECRET_KEY=<SECRET_KEY>
-INFURA_ID=<INFURA_ID>
-AXIE_CONTRACT_ADDRESS=<CONTRACT_ADDRESS>
-```
-
-- PORT - running port number of the application.
-- DB_USERNAME - username of the MongoDB Atlas database.
-- DB_PASSWORD - password of the MongoDB Atlas database.
-- DB_NAME - name of the MongoDB Atlas database.
-- ACCESS_TOKEN_SECRET_KEY - secret key for authentication.
-- INFURA_ID - Infura ID project ID.
-- AXIE_CONTRACT_ADDRESS - Axie's contract address.
-
 ## Database Setup
 
-1. Sign up for MongoDB Atlas
+### Database Setup in Localhost
 
-   Visit MongoDB Atlas and create an account.
+1. Ensure MongoDB Compass is installed on your machine.
 
-2. Create a Cluster
+   For Windows: Here's the download link: https://downloads.mongodb.com/compass/mongodb-compass-1.44.6-win32-x64.exe
 
-   Follow the MongoDB Atlas instructions to set up a new cluster.
+   For Mac: Here's the download link: https://downloads.mongodb.com/compass/mongodb-compass-1.44.6-darwin-x64.dmg
 
-3. Update Environment Variables
+2. Once successfully installed, open MongoDB Compass and create a new database. You can name it whatever you like, and create your first collection.
 
-   Ensure your app is configured to connect to the MongoDB cluster. Update the .env file with your connection string:
+   ![alt text](./assets/image.png)
 
-   ```env
-   DB_USERNAME=<USERNAME>
-   DB_PASSWORD=<PASSWORD>
-   DB_DATABASE_NAME=<DB_NAME>
+3. After successfully creating a new database, you will see this on the sidebar
+
+   ![alt text](./assets/image-1.png)
+
+## Running the project
+
+1. Clone this repository: https://github.com/adriandotdev/breederdao-assessment.
+
+   ![alt text](./assets/image-2.png)
+
+2. After successfully cloning the repository, navigate to the new created folder.
+
+   ```bash
+   cd /breederdao-assessment
    ```
+
+3. Install dependencies.
+
+   ```bash
+   npm install
+   ```
+
+4. After successfully installing all the dependencies, run the app.
+
+   ```bash
+   npm run dev
+   ```
+
+5. Once you successfully setup the database and the app, you will see this in the console.
+
+   ![alt text](./assets/image-3.png)
+
+## Technologies Used
+
+- NodeJS
+- ExpressJS
+- GraphQL
+- MongoDB

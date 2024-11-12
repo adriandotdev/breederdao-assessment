@@ -16,6 +16,8 @@ const MONGO_LINK = `${
 		: `mongodb://localhost:27017/sample-project`
 }`;
 
+logger.info(`Mongo Link: ${MONGO_LINK}`);
+
 mongoose
 	.connect(MONGO_LINK, { dbName: dbDatabaseName })
 	.then(() => {
