@@ -24,6 +24,18 @@ Ensure the following are installed and set up on your machine:
 
    ![alt text](./assets/image-1.png)
 
+## Environment Variables to Configure
+
+```.env
+PORT=3000
+DB_USERNAME=<MONGODB_ATLAS_USER>
+DB_PASSWORD=<MONGODB_ATLAS_PASSWORD>
+DB_DATABASE_NAME=<DATABASE_NAME>
+ACCESS_TOKEN_SECRET_KEY=<SECRET_KEY>
+INFURA_ID=<INFURA_PROJECT_ID>
+AXIE_CONTRACT_ADDRESS=<AXIE_CONTRACT_ADDRESS>
+```
+
 ## Running the project
 
 1. Clone this repository: https://github.com/adriandotdev/breederdao-assessment.
