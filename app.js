@@ -20,19 +20,16 @@ const app = express();
 const morgan = require("morgan");
 const logger = require("./utils/logger");
 
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./graphql/schema");
+
 // Global Middlewares
 app.use(helmet());
 app.use(helmet.frameguard({ action: "deny" }));
 
 app.use(
 	cors({
-		origin: [
-			"http://localhost:3000",
-			"http://localhost:5173",
-			"https://v2-stg-parkncharge.sysnetph.com",
-			"http://localhost:3001",
-			"https://v2-admin-parkncharge.sysnetph.com",
-		],
+		origin: "*",
 		methods: ["OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH"],
 	})
 );
@@ -45,6 +42,35 @@ app.use(cookieParser());
 
 require("./apis/accounts.api")(app);
 require("./apis/axies.api")(app);
+
+app.use(
+	"/graphql",
+	graphqlHTTP((req, res) => {
+		return {
+			schema,
+			graphiql: true,
+			context: {
+				auth: req.headers.authorization,
+				// connection: req.context.connection,
+			},
+			customFormatErrorFn: (error) => {
+				if (req.context && req.context.connection) {
+					req.context.connection.release();
+					req.context.connection = null;
+				}
+
+				return {
+					message: error.originalError?.message
+						? error.originalError?.message
+						: "Internal Server Error",
+					status: error.originalError?.status
+						? error.originalError?.status
+						: 500,
+				};
+			},
+		};
+	})
+);
 
 app.use("*", (req, res, next) => {
 	logger.error({
